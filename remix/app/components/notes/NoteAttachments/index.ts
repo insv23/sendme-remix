@@ -1,0 +1,1 @@
+export { NoteAttachments } from './NoteAttachments';
