@@ -8,5 +8,3 @@ export async function getPb() {
   }
   return pb;
 }
-
-// TODO: refactor this file to pb.server.ts
