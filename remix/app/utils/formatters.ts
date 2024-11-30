@@ -1,7 +1,4 @@
-/**
- * 格式化笔记日期为本地化字符串
- */
-export function formatNoteDate(date: string) {
+export function formatDate(date: string) {
   return new Date(date).toLocaleString("zh-CN", {
     year: "numeric",
     month: "long",
@@ -11,16 +8,10 @@ export function formatNoteDate(date: string) {
   });
 }
 
-/**
- * 从用户ID中获取用户首字母
- */
-export function getUserInitial(user: string) {
+export function formatUserInitial(user: string) {
   return user.replace("user_", "")[0].toUpperCase();
 }
 
-/**
- * 格式化用户名（移除前缀）
- */
 export function formatUsername(user: string) {
   return user.replace("user_", "");
-}
+} 
