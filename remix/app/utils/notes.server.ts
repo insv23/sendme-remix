@@ -1,5 +1,5 @@
 import type { Note } from "~/types/note";
-import { getPb } from "./pb";
+import { getPb } from "./pb.server";
 
 export async function getNotes() {
   const pb = await getPb();
