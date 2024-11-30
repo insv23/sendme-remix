@@ -1,6 +1,7 @@
 migrate(
   (db) => {
     const dao = new Dao(db);
+    const collection = dao.findCollectionByNameOrId("users");
 
     // 创建用户
     const users = [
@@ -9,10 +10,6 @@ migrate(
         username: "xiaoming",
         email: "xiaoming@example.com",
         emailVisibility: true,
-        password:
-          "$2a$12$wQD.2yqNVCvIxvXqWBZOyebqpa.GzN11gqnLKj/h2FnDgqvA5Yqmi", // "password123"
-        passwordConfirm:
-          "$2a$12$wQD.2yqNVCvIxvXqWBZOyebqpa.GzN11gqnLKj/h2FnDgqvA5Yqmi",
         verified: true,
         tokenKey: "xiaoming_" + new Date().getTime(),
       },
@@ -21,17 +18,15 @@ migrate(
         username: "alex",
         email: "alex@example.com",
         emailVisibility: true,
-        password:
-          "$2a$12$wQD.2yqNVCvIxvXqWBZOyebqpa.GzN11gqnLKj/h2FnDgqvA5Yqmi", // "password123"
-        passwordConfirm:
-          "$2a$12$wQD.2yqNVCvIxvXqWBZOyebqpa.GzN11gqnLKj/h2FnDgqvA5Yqmi",
         verified: true,
         tokenKey: "alex_" + new Date().getTime(),
       },
     ];
 
-    users.forEach((user) => {
-      dao.saveRecord(new Record(dao.findCollectionByNameOrId("users"), user));
+    users.forEach((userData) => {
+      const record = new Record(collection, userData);
+      record.setPassword("password123");
+      dao.saveRecord(record);
     });
 
     // 创建笔记
