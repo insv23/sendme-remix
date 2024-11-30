@@ -40,6 +40,7 @@ services:
       context: .
       target: remix_dev
       dockerfile: Dockerfile.dev
+    container_name: remix
     develop:
       watch:
         - path: ./remix/
@@ -49,11 +50,12 @@ services:
             - node_modules
         - path: ./remix/package.json
           action: rebuild
-    container_name: remix
     command: npm run dev -- --host
     restart: unless-stopped
     ports:
       - 5173:5173
+    environment:
+      - SESSION_SECRET=your-development-secret-key-at-least-32-chars
     labels:
       - "traefik.http.routers.remix.rule=PathPrefix(`/`)"
       - "traefik.http.services.remix.loadbalancer.server.port=5173"
