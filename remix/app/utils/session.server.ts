@@ -27,3 +27,7 @@ export async function createSession(token: string, redirectTo: string) {
     },
   });
 }
+
+export async function getSession(cookie: string | null) {
+  return sessionStorage.getSession(cookie);
+}
