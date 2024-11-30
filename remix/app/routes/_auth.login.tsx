@@ -1,7 +1,7 @@
 import { json, type ActionFunctionArgs } from "@remix-run/node";
 import { Form, useActionData, useSearchParams } from "@remix-run/react";
 import { getPb } from "~/utils/pb.server";
-import { createUserSession } from "~/utils/session.server";
+import { createSession } from "~/utils/session.server";
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
@@ -19,7 +19,7 @@ export async function action({ request }: ActionFunctionArgs) {
       .collection("users")
       .authWithPassword(email, password);
 
-    return createUserSession(authData.token, redirectTo);
+    return createSession(authData.token, redirectTo);
   } catch (error) {
     return json({ error: "Invalid email or password" }, { status: 401 });
   }

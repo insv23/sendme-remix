@@ -17,7 +17,7 @@ const sessionStorage = createCookieSessionStorage({
   },
 });
 
-export async function createUserSession(token: string, redirectTo: string) {
+export async function createSession(token: string, redirectTo: string) {
   const session = await sessionStorage.getSession();
   session.set("token", token);
 
