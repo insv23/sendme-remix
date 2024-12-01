@@ -7,6 +7,7 @@ export async function getNotes() {
   if (!pb.authStore.isValid) {
     throw redirect("/login");
   }
+
   const userId = JSON.parse(atob(pb.authStore.token.split(".")[1])).id;
   return pb.collection("notes").getFullList<Note>({
     filter: `created_by ~ "${userId}"`,
@@ -20,5 +21,13 @@ export async function getNote(id: string) {
 
 export async function createNote(data: Partial<Note>) {
   const pb = await getPb();
-  return pb.collection("notes").create<Note>(data);
+  if (!pb.authStore.isValid) {
+    throw redirect("/login");
+  }
+
+  const userId = JSON.parse(atob(pb.authStore.token.split(".")[1])).id;
+  return pb.collection("notes").create<Note>({
+    ...data,
+    created_by: [userId],
+  });
 }

@@ -19,13 +19,21 @@ export async function action({
     });
   }
 
-  await createNote({
-    text,
-    created_by: ["user_default"], // 这里应该使用实际的用户ID
-    files: [],
-  });
-
-  return redirect("/notes");
+  try {
+    await createNote({
+      text,
+      files: [],
+    });
+    return redirect("/notes");
+  } catch (error) {
+    return new Response(
+      JSON.stringify({ error: "创建笔记失败,请稍后重试" }), 
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
 }
 
 export default function NewNote() {
