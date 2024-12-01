@@ -31,3 +31,12 @@ export async function createSession(token: string, redirectTo: string) {
 export async function getSession(cookie: string | null) {
   return sessionStorage.getSession(cookie);
 }
+
+export async function destroySession(cookie: string | null) {
+  const session = await sessionStorage.getSession(cookie);
+  return redirect("/login", {
+    headers: {
+      "Set-Cookie": await sessionStorage.destroySession(session),
+    },
+  });
+}
