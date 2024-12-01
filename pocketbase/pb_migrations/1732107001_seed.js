@@ -33,11 +33,11 @@ migrate(
     const notes = [
       {
         text: "这是小明的第一条笔记",
-        user: "user_xiaoming",
+        created_by: "user_xiaoming",
       },
       {
         text: "This is Alex's first note",
-        user: "user_alex",
+        created_by: "user_alex",
       },
     ];
 

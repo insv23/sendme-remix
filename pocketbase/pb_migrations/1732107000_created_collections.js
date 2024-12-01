@@ -23,7 +23,7 @@ migrate(
           },
         },
         {
-          name: "user",
+          name: "created_by",
           type: "relation",
           required: true,
           options: {

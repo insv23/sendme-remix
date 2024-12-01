@@ -3,7 +3,7 @@ export interface Note {
   text: string;
   created: string;
   updated: string;
-  user: string[];
+  created_by: string[];
   files: any[];
   collectionId: string;
   collectionName: string;
