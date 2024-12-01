@@ -32,16 +32,11 @@ migrate(
           },
         },
       ],
-      listRule: "",
-      viewRule: "",
+      listRule: '@request.auth.id != "" && created_by ~ @request.auth.id',
+      viewRule: '@request.auth.id != "" && created_by ~ @request.auth.id',
       createRule: '@request.auth.id != ""',
-      updateRule: '@request.auth.id != ""',
-      deleteRule: '@request.auth.id != ""',
-      //   listRule: "@request.auth.id != '' && account = @request.auth.id",
-      //   viewRule: "@request.auth.id != '' && account = @request.auth.id",
-      //   createRule: "@request.auth.id != ''",
-      //   updateRule: "@request.auth.id != '' && account = @request.auth.id",
-      //   deleteRule: "@request.auth.id != '' && account = @request.auth.id",
+      updateRule: '@request.auth.id != "" && created_by ~ @request.auth.id',
+      deleteRule: '@request.auth.id != "" && created_by ~ @request.auth.id',
     });
 
     console.log("🐥 notes 创建");
