@@ -1,9 +1,31 @@
-import { type ActionFunctionArgs, TypedResponse } from "@remix-run/node";
+import {
+  type ActionFunctionArgs,
+  TypedResponse,
+  LoaderFunctionArgs,
+  redirect,
+} from "@remix-run/node";
 import { Form, useActionData, useSearchParams } from "@remix-run/react";
 import { getPb } from "~/utils/pb.server";
 import { createSession } from "~/utils/session.server";
+import { checkAuth } from "~/utils/auth.server";
 
-export async function action({ request }: ActionFunctionArgs): Promise<TypedResponse<any>> {
+export async function loader({
+  request,
+}: LoaderFunctionArgs): Promise<TypedResponse<any>> {
+  const auth = await checkAuth(request);
+
+  if (auth.isAuthenticated) {
+    return redirect("/notes");
+  }
+
+  return new Response(JSON.stringify({}), {
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
+export async function action({
+  request,
+}: ActionFunctionArgs): Promise<TypedResponse<any>> {
   const formData = await request.formData();
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
@@ -11,8 +33,8 @@ export async function action({ request }: ActionFunctionArgs): Promise<TypedResp
 
   if (!email || !password) {
     return new Response(
-      JSON.stringify({ error: "Email and password are required" }), 
-      { 
+      JSON.stringify({ error: "Email and password are required" }),
+      {
         status: 400,
         headers: { "Content-Type": "application/json" },
       }
@@ -28,8 +50,8 @@ export async function action({ request }: ActionFunctionArgs): Promise<TypedResp
     return createSession(authData.token, redirectTo);
   } catch (error) {
     return new Response(
-      JSON.stringify({ error: "Invalid email or password" }), 
-      { 
+      JSON.stringify({ error: "Invalid email or password" }),
+      {
         status: 401,
         headers: { "Content-Type": "application/json" },
       }
