@@ -1,16 +1,22 @@
-import { json, type ActionFunctionArgs } from "@remix-run/node";
+import { type ActionFunctionArgs, TypedResponse } from "@remix-run/node";
 import { Form, useActionData, useSearchParams } from "@remix-run/react";
 import { getPb } from "~/utils/pb.server";
 import { createSession } from "~/utils/session.server";
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: ActionFunctionArgs): Promise<TypedResponse<any>> {
   const formData = await request.formData();
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const redirectTo = (formData.get("redirectTo") as string) || "/notes";
 
   if (!email || !password) {
-    return json({ error: "Email and password are required" }, { status: 400 });
+    return new Response(
+      JSON.stringify({ error: "Email and password are required" }), 
+      { 
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 
   try {
@@ -21,7 +27,13 @@ export async function action({ request }: ActionFunctionArgs) {
 
     return createSession(authData.token, redirectTo);
   } catch (error) {
-    return json({ error: "Invalid email or password" }, { status: 401 });
+    return new Response(
+      JSON.stringify({ error: "Invalid email or password" }), 
+      { 
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 }
 

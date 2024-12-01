@@ -1,12 +1,13 @@
-import { json } from "@remix-run/node";
+import { TypedResponse } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { NoteList } from "~/components/notes";
 import { getNotes } from "~/utils/notes.server";
 
-export const loader = async () => {
-  // 确保使用 export const 而不是 export async function
+export const loader = async (): Promise<TypedResponse<{ notes: any }>> => {
   const notes = await getNotes();
-  return json({ notes });
+  return new Response(JSON.stringify({ notes }), {
+    headers: { "Content-Type": "application/json" },
+  });
 };
 
 export default function NotesIndex() {

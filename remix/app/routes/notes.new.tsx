@@ -1,18 +1,27 @@
-import { json, redirect, type ActionFunctionArgs } from "@remix-run/node";
+import {
+  redirect,
+  type ActionFunctionArgs,
+  TypedResponse,
+} from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
 import { createNote } from "~/utils/notes.server";
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({
+  request,
+}: ActionFunctionArgs): Promise<TypedResponse<any>> {
   const formData = await request.formData();
   const text = formData.get("text") as string;
 
   if (!text?.trim()) {
-    return json({ error: "笔记内容不能为空" }, { status: 400 });
+    return new Response(JSON.stringify({ error: "笔记内容不能为空" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   await createNote({
     text,
-    user: ["user_default"], // 这里应该使用实际的用户ID
+    created_by: ["user_default"], // 这里应该使用实际的用户ID
     files: [],
   });
 
