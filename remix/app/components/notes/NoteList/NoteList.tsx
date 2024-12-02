@@ -6,10 +6,14 @@ interface NoteListProps {
 }
 
 export function NoteList({ notes }: NoteListProps) {
+  const sortedNotes = [...notes].sort((a, b) => 
+    new Date(b.updated).getTime() - new Date(a.updated).getTime()
+  );
+
   return (
     <>
       <div className="space-y-4">
-        {notes.map((note) => (
+        {sortedNotes.map((note) => (
           <NoteCard key={note.id} note={note} />
         ))}
       </div>
