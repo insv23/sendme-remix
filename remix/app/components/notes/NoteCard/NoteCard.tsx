@@ -8,7 +8,7 @@ interface NoteCardProps {
 
 export function NoteCard({ note }: NoteCardProps) {
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
+    <div className="rounded-lg border border-gray-200 bg-white pt-2 pb-4 px-4 shadow-sm transition hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
       <NoteHeader note={note} />
 
       <div className="prose prose-gray dark:prose-invert">

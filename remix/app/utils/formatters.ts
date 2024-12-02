@@ -1,23 +1,11 @@
 export function formatDate(date: string) {
-  const timestamp = new Date(date).getTime();
+  const d = new Date(date);
 
-  const formatter = new Intl.DateTimeFormat("zh-CN", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: "Asia/Shanghai",
-  });
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  const hours = String(d.getHours()).padStart(2, "0");
+  const minutes = String(d.getMinutes()).padStart(2, "0");
 
-  return formatter.format(timestamp);
-}
-
-export function formatUserInitial(user: string) {
-  return user.replace("user_", "")[0].toUpperCase();
-}
-
-export function formatUsername(user: string) {
-  return user.replace("user_", "");
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
