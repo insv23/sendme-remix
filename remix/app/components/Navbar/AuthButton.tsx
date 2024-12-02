@@ -1,4 +1,5 @@
 import { Link } from "@remix-run/react";
+import { Button } from "~/components/ui/button";
 import { UserDropdownMenu } from "./UserDropdownMenu";
 
 type AuthButtonProps = {
@@ -11,8 +12,8 @@ export function AuthButton({ isAuthenticated }: AuthButtonProps) {
   }
 
   return (
-    <Link to="/login" className="btn btn-primary">
-      登录
+    <Link to="/login">
+      <Button variant="outline">登录</Button>
     </Link>
   );
 }
