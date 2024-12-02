@@ -6,6 +6,8 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
+import { checkAuth } from "~/utils/auth.server";
 
 import "./tailwind.css";
 import styles from "./tailwind.css?url";
@@ -61,3 +63,10 @@ export default function App() {
 export function ErrorBoundary() {
   return <NotFound />;
 }
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const { isAuthenticated } = await checkAuth(request);
+  return new Response(JSON.stringify({ isAuthenticated }), {
+    headers: { "Content-Type": "application/json" },
+  });
+};
