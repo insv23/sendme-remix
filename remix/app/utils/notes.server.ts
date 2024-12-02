@@ -31,3 +31,12 @@ export async function createNote(data: Partial<Note>) {
     created_by: [userId],
   });
 }
+
+export async function deleteNote(id: string) {
+  const pb = await getPb();
+  if (!pb.authStore.isValid) {
+    throw redirect("/login");
+  }
+
+  return pb.collection("notes").delete(id);
+}
