@@ -12,6 +12,7 @@ export function NoteHeader({ note }: NoteHeaderProps) {
       <time className="text-sm text-gray-400 dark:text-gray-400">
         {formatDate(note.created)}
       </time>
+      <NoteMenu noteId={note.id} />
     </div>
   );
 }

@@ -4,3 +4,4 @@ export * from "./NoteHeader";
 export * from "./NoteAttachments";
 export * from "./FileDownloadButton";
 export * from "./NoteForm";
+export * from "./NoteMenu";
