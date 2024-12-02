@@ -12,7 +12,7 @@ export function NoteList({ notes }: NoteListProps) {
 
   return (
     <>
-      <div className="space-y-4">
+      <div className="space-y-2">
         {sortedNotes.map((note) => (
           <NoteCard key={note.id} note={note} />
         ))}

@@ -18,9 +18,6 @@ export default function NotesIndex() {
 
   return (
     <div className="space-y-4">
-      <h1 className="mb-8 text-center text-3xl font-bold text-gray-900 dark:text-white">
-        我的笔记
-      </h1>
       <NoteForm />
       <NoteList notes={notes} />
     </div>

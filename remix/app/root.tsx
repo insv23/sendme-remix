@@ -10,7 +10,7 @@ import type { LinksFunction } from "@remix-run/node";
 import "./tailwind.css";
 import styles from "./tailwind.css?url";
 import NotFound from "./routes/404";
-
+import { Navbar } from "./components/Navbar";
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: styles },
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -50,7 +50,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <>
+      <Navbar />
+      <Outlet />
+    </>
+  );
 }
 
 export function ErrorBoundary() {
