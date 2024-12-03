@@ -1,5 +1,11 @@
 migrate(
   (db) => {
+    // 检查是否为生产环境
+    if (process.env.NODE_ENV === "production") {
+      console.log("⏭️ 生产环境跳过测试数据添加");
+      return;
+    }
+
     const dao = new Dao(db);
     const collection = dao.findCollectionByNameOrId("users");
 
@@ -48,6 +54,12 @@ migrate(
     console.log("🌱 测试数据已添加");
   },
   (db) => {
+    // 检查是否为生产环境
+    if (process.env.NODE_ENV === "production") {
+      console.log("⏭️ 生产环境跳过测试数据清除");
+      return;
+    }
+
     const dao = new Dao(db);
 
     // 删除笔记
