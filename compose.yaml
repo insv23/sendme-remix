@@ -8,8 +8,8 @@ services:
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
     ports:
-      - 80:80
-      - 443:443
+      - 7480:80
+      - 7443:443
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       # - ./traefik/acme.json:/acme.json:rw

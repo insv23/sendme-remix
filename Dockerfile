@@ -2,7 +2,7 @@
 FROM alpine:3 AS pb_builder
 
 ARG PB_VERSION=0.22.27
-ARG ARCH=arm64
+ARG ARCH=amd64
 
 ADD https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_${ARCH}.zip /tmp/pb.zip
 RUN unzip /tmp/pb.zip -d /pb/
