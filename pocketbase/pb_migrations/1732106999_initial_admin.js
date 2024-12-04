@@ -11,7 +11,7 @@ migrate(
     admin.setPassword(adminPassword);
 
     try {
-      console.log("[1] initial admin");
+      console.log("🤴 初始管理员创建 ");
       return dao.saveAdmin(admin);
     } catch (err) {
       console.error("Failed to create admin:", err);

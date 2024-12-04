@@ -38,5 +38,6 @@ export async function deleteNote(id: string) {
     throw redirect("/login");
   }
 
+  // collection 定义了  note 删除时会自动删除关联的 files
   return pb.collection("notes").delete(id);
 }
