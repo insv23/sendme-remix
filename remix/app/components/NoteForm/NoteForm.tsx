@@ -1,0 +1,85 @@
+import { useState, useRef } from "react";
+import { Form } from "@remix-run/react";
+import { useActionData, useNavigation } from "@remix-run/react";
+import type { action } from "~/routes/notes.new";
+import { NoteTextArea } from "./NoteTextArea";
+import { SendHorizontal, Upload } from "lucide-react";
+
+export function NoteForm() {
+  const actionData = useActionData<typeof action>();
+  const navigation = useNavigation();
+
+  const isSubmitting = navigation.state === "submitting";
+
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    setSelectedFiles((prev) => [...prev, ...files]);
+  };
+
+  // 点击自定义的上传按钮时，实际上是在间接触发隐藏的文件输入框
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  return (
+    <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+      <Form method="post" className="space-y-4">
+        <div>
+          <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm focus-within:border-blue-200 focus-within:ring-1 focus-within:ring-blue-200">
+            <NoteTextArea
+              isSubmitting={isSubmitting}
+              onFilesPasted={(files) =>
+                setSelectedFiles((prev) => [...prev, ...files])
+              }
+            />
+
+            {selectedFiles.length > 0 && (
+              <div className="border-t border-gray-200 p-3">
+                <div className="text-sm text-gray-500 mb-2">已选择的文件:</div>
+                <div className="space-y-2">
+                  {selectedFiles.map((file, index) => (
+                    <div key={index} className="text-sm text-gray-700">
+                      {file.name}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="flex items-center justify-end gap-2 bg-white p-3">
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileSelect}
+                className="hidden"
+                multiple
+              />
+              <button
+                type="button"
+                onClick={handleUploadClick}
+                className="flex items-center gap-1 rounded bg-gray-100 px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-200"
+              >
+                Upload <Upload className="w-4 h-4" />
+              </button>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="flex items-center gap-1 rounded bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-700"
+              >
+                Send <SendHorizontal className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {actionData?.error && (
+            <p className="mt-1 text-sm text-red-600">{actionData.error}</p>
+          )}
+        </div>
+      </Form>
+    </div>
+  );
+}
