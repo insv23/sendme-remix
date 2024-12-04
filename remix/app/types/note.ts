@@ -18,8 +18,8 @@ export interface Note extends BaseRecord {
 
 // 文件类型
 export interface FileRecord extends BaseRecord {
-  file: string;
-  note: string[];
+  file: File;
+  note?: string[];
   created_by: string[];
 }
 
