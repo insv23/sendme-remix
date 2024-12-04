@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { Form } from "@remix-run/react";
-import { useActionData, useNavigation } from "@remix-run/react";
+import { useActionData, useNavigation, useFetcher } from "@remix-run/react";
 import type { action } from "~/routes/notes.new";
 import { NoteTextArea } from "./NoteTextArea";
 import { SendHorizontal, Upload } from "lucide-react";
@@ -13,10 +13,26 @@ export function NoteForm() {
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const uploadFetcher = useFetcher();
+
+  // 抽象出文件上传逻辑
+  const uploadFiles = (files: File[]) => {
+    setSelectedFiles((prev) => [...prev, ...files]);
+    
+    files.forEach(file => {
+      const formData = new FormData();
+      formData.append("file", file);
+      uploadFetcher.submit(formData, {
+        method: "post",
+        action: "/file/upload",
+        encType: "multipart/form-data"
+      });
+    });
+  };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
-    setSelectedFiles((prev) => [...prev, ...files]);
+    uploadFiles(files);
   };
 
   // 点击自定义的上传按钮时，实际上是在间接触发隐藏的文件输入框
@@ -31,9 +47,7 @@ export function NoteForm() {
           <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm focus-within:border-blue-200 focus-within:ring-1 focus-within:ring-blue-200">
             <NoteTextArea
               isSubmitting={isSubmitting}
-              onFilesPasted={(files) =>
-                setSelectedFiles((prev) => [...prev, ...files])
-              }
+              onFilesPasted={uploadFiles}
             />
 
             {selectedFiles.length > 0 && (
