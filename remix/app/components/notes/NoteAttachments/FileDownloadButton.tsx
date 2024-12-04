@@ -1,13 +1,13 @@
-import type { Note } from "~/types/note";
+import type { Note, FileRecord } from "~/types/note";
 
 export interface FileDownloadButtonProps {
-  file: string;
+  file: FileRecord;
   note: Note;
 }
 
 export function FileDownloadButton({ file, note }: FileDownloadButtonProps) {
-  const fileName = decodeURIComponent(file.split("/").pop() || "");
-  const downloadUrl = `/api/files/${note.collectionId}/${note.id}/${file}`;
+  const fileName = decodeURIComponent(file.file);
+  const downloadUrl = `/api/collections/files/records/${file.id}`;
 
   return (
     <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 dark:border-gray-700 dark:bg-gray-800/50">
