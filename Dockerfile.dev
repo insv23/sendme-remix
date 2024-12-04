@@ -11,7 +11,7 @@ FROM alpine:3 AS pb_dev
 COPY --from=pb_builder /pb/pocketbase /pb/pocketbase
 RUN apk add --no-cache ca-certificates
 EXPOSE 8090
-CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8090"]
+CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8090", "--dev"]
 
 
 
