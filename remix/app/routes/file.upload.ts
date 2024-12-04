@@ -18,6 +18,11 @@ export const action: ActionFunction = async ({ request }) => {
     });
   } catch (error) {
     console.error("上传失败:", error);
-    throw new Response("上传失败", { status: 500 });
+    return new Response(JSON.stringify({ error: "上传失败" }), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   }
 };

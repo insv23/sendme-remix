@@ -32,3 +32,20 @@ export async function uploadFile(file: File, noteId?: string) {
   }
 }
 
+// 关联文件到笔记
+export async function attachFileToNote(fileId: string, noteId: string) {
+  const pb = await getPb();
+  if (!pb.authStore.isValid) {
+    throw redirect("/login");
+  }
+
+  try {
+    return pb.collection("files").update<FileRecord>(fileId, {
+      note: [noteId],
+    });
+  } catch (error) {
+    console.error("关联文件失败:", error);
+    throw new Error("关联文件失败");
+  }
+}
+

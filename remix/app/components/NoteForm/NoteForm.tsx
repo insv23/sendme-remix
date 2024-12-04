@@ -5,6 +5,10 @@ import type { action } from "~/routes/notes.new";
 import { NoteTextArea } from "./NoteTextArea";
 import { SendHorizontal, Upload } from "lucide-react";
 
+interface UploadResponse {
+  id: string;
+}
+
 export function NoteForm() {
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
@@ -17,10 +21,10 @@ export function NoteForm() {
   const uploadFetcher = useFetcher();
   const [uploadedFileIds, setUploadedFileIds] = useState<string[]>([]);
 
-  // 抽象出文件上传逻辑
+  // FIXME: 同时选择多个文件时，前几个上传失败, 只有最后一个上传成功
   const uploadFiles = (files: File[]) => {
     setSelectedFiles((prev) => [...prev, ...files]);
-    
+
     files.forEach((file) => {
       const formData = new FormData();
       formData.append("file", file);
@@ -31,6 +35,16 @@ export function NoteForm() {
       });
     });
   };
+
+  useEffect(() => {
+    // 存储成功上传的文件 ID
+    const data = uploadFetcher.data as UploadResponse;
+    // TODO: 使用完删除
+    console.log("🦴 uploadFetcher.data", uploadFetcher.data);
+    if (data?.id) {
+      setUploadedFileIds((prev) => [...prev, data.id]);
+    }
+  }, [uploadFetcher.data]);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
@@ -75,6 +89,11 @@ export function NoteForm() {
                 </div>
               </div>
             )}
+
+            {/* 添加隐藏的 input 字段来传递文件 ID */}
+            {uploadedFileIds.map((fileId) => (
+              <input key={fileId} type="hidden" name="fileIds" value={fileId} />
+            ))}
 
             <div className="flex items-center justify-end gap-2 bg-white p-3">
               <input
