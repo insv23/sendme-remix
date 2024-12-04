@@ -9,11 +9,26 @@ interface AuthResult {
   error?: string;
 }
 
-// 用于检查用户是否已登录 (不会重定向)
-export async function checkAuth(request: Request): Promise<AuthResult> {
+async function getSessionAndToken(request: Request) {
   const cookie = request.headers.get("Cookie");
   const session = await getSession(cookie);
   const token = session.get("token");
+  return { session, token };
+}
+
+// 验证 PocketBase 认证状态
+async function validatePbAuth(cookie: string) {
+  const pb = await getPb();
+  if (!pb.authStore.isValid) {
+    await destroySession(cookie);
+    return { isValid: false, error: "登录已过期" };
+  }
+  return { isValid: true, pb };
+}
+
+// 用于检查用户是否已登录 (不会重定向)
+export async function checkAuth(request: Request): Promise<AuthResult> {
+  const { session, token } = await getSessionAndToken(request);
 
   if (!token) {
     return {
@@ -23,12 +38,13 @@ export async function checkAuth(request: Request): Promise<AuthResult> {
   }
 
   try {
-    const pb = await getPb();
-    if (!pb.authStore.isValid) {
-      await destroySession(cookie);
+    const { isValid, pb, error } = await validatePbAuth(
+      request.headers.get("Cookie")!
+    );
+    if (!isValid) {
       return {
         isAuthenticated: false,
-        error: "登录已过期",
+        error,
       };
     }
 

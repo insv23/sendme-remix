@@ -1,10 +1,11 @@
 import { getPb } from "./pb.server";
 import { redirect } from "@remix-run/node";
+import type { FileRecord } from "~/types/note";
 
 // 上传文件
 export async function uploadFile(file: File, noteId?: string) {
   const pb = await getPb();
-  if (!pb.authStore.isValid || !pb.authStore.token) {
+  if (!pb.authStore.isValid) {
     throw redirect("/login");
   }
 
