@@ -1,11 +1,15 @@
 interface NoteTextAreaProps {
   isSubmitting: boolean;
   onFilesPasted: (files: File[]) => void;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
 export function NoteTextArea({
   isSubmitting,
   onFilesPasted,
+  value,
+  onChange,
 }: NoteTextAreaProps) {
   const handlePaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
     const items = Array.from(event.clipboardData.items);
@@ -40,6 +44,8 @@ export function NoteTextArea({
         placeholder="在这里输入笔记内容..."
         disabled={isSubmitting}
         onPaste={handlePaste}
+        value={value}
+        onChange={onChange}
       />
     </>
   );

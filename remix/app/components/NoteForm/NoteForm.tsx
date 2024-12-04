@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Form } from "@remix-run/react";
 import { useActionData, useNavigation, useFetcher } from "@remix-run/react";
 import type { action } from "~/routes/notes.new";
@@ -11,21 +11,23 @@ export function NoteForm() {
 
   const isSubmitting = navigation.state === "submitting";
 
+  const [textareaValue, setTextareaValue] = useState("");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadFetcher = useFetcher();
+  const [uploadedFileIds, setUploadedFileIds] = useState<string[]>([]);
 
   // 抽象出文件上传逻辑
   const uploadFiles = (files: File[]) => {
     setSelectedFiles((prev) => [...prev, ...files]);
     
-    files.forEach(file => {
+    files.forEach((file) => {
       const formData = new FormData();
       formData.append("file", file);
       uploadFetcher.submit(formData, {
         method: "post",
         action: "/file/upload",
-        encType: "multipart/form-data"
+        encType: "multipart/form-data",
       });
     });
   };
@@ -40,6 +42,15 @@ export function NoteForm() {
     fileInputRef.current?.click();
   };
 
+  useEffect(() => {
+    // 当表单提交成功后(navigation.state 变为 idle 且没有错误时)，清除输入框中文字和文件状态
+    if (navigation.state === "idle" && !actionData?.error) {
+      setTextareaValue("");
+      setSelectedFiles([]);
+      setUploadedFileIds([]);
+    }
+  }, [navigation.state, actionData]);
+
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
       <Form method="post" className="space-y-4">
@@ -48,6 +59,8 @@ export function NoteForm() {
             <NoteTextArea
               isSubmitting={isSubmitting}
               onFilesPasted={uploadFiles}
+              value={textareaValue}
+              onChange={(e) => setTextareaValue(e.target.value)}
             />
 
             {selectedFiles.length > 0 && (
