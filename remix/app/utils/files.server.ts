@@ -24,7 +24,12 @@ export async function uploadFile(file: File, noteId?: string) {
   }
 
   try {
-    const record = await pb.collection("files").create(formData);
+    // 为每个文件上传请求添加唯一的 requestKey，不然 pb 会只上传最后一个文件
+    // https://github.com/pocketbase/js-sdk?tab=readme-ov-file#auto-cancellation
+    const requestKey = `upload_${file.name}_${Date.now()}`;
+    const record = await pb.collection("files").create(formData, {
+      requestKey,
+    });
     console.log("💬 file uploaded", record);
     return record;
   } catch (error) {
