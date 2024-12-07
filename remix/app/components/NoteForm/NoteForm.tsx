@@ -21,7 +21,6 @@ export function NoteForm() {
   const uploadFetcher = useFetcher();
   const [uploadedFileIds, setUploadedFileIds] = useState<string[]>([]);
 
-  // FIXME: 同时选择多个文件时，前几个上传失败, 只有最后一个上传成功
   const uploadFiles = (files: File[]) => {
     setSelectedFiles((prev) => [...prev, ...files]);
 
@@ -39,8 +38,6 @@ export function NoteForm() {
   useEffect(() => {
     // 存储成功上传的文件 ID
     const data = uploadFetcher.data as UploadResponse;
-    // TODO: 使用完删除
-    console.log("🦴 uploadFetcher.data", uploadFetcher.data);
     if (data?.id) {
       setUploadedFileIds((prev) => [...prev, data.id]);
     }
