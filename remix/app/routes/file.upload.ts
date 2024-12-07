@@ -5,12 +5,12 @@ export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const file = formData.get("file");
 
-  if (!file || !(file instanceof File)) {
+  if (!file) {
     throw new Response("无效的文件上传", { status: 400 });
   }
 
   try {
-    const uploadedFile = await uploadFile(file);
+    const uploadedFile = await uploadFile(file as File);
     return new Response(JSON.stringify(uploadedFile), {
       headers: {
         "Content-Type": "application/json",
