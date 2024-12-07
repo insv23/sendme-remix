@@ -25,6 +25,7 @@ RUN npm run build
 FROM node:20.5.1-bookworm-slim AS remix_prod
 WORKDIR /remix
 COPY --from=remix_builder /remix/build ./build
+COPY --from=remix_builder /remix/public ./public
 COPY --from=remix_builder /remix/package*.json ./
 RUN --mount=type=cache,id=npm,target=/root/.npm \
     npm ci --omit=dev
