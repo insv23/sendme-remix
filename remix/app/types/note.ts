@@ -11,14 +11,19 @@ interface BaseRecord {
 export interface Note extends BaseRecord {
   text: string;
   created_by: string[];
-  expand?: {
-    files?: FileRecord[];
-  };
+  files?: FileRecord[];
 }
 
 // 文件类型
 export interface FileRecord extends BaseRecord {
-  file: File;
+  name: string;
+  url: string;
+  note?: string[];
+  created_by: string[];
+}
+
+export interface PocketBaseFileRecord extends BaseRecord {
+  file: string; // 虽然在 pb 中是 file 字段，但是 PocketBase 会返回文件的名称（字符串），而不是完整的 File 对象。
   note?: string[];
   created_by: string[];
 }

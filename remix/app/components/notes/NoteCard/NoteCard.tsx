@@ -15,10 +15,9 @@ export function NoteCard({ note }: NoteCardProps) {
         <p className="text-gray-700 dark:text-gray-300">{note.text}</p>
       </div>
 
-      {note.expand?.files && note.expand.files.length > 0 && (
+      {note.files && note.files.length > 0 && (
         <>
-          <p>有附件</p> // FIXME: 为啥文件不展示
-          <NoteAttachments note={note} />
+          <NoteAttachments attachments={note.files} />
         </>
       )}
     </div>

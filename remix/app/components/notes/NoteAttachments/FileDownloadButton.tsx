@@ -2,12 +2,10 @@ import type { Note, FileRecord } from "~/types/note";
 
 export interface FileDownloadButtonProps {
   file: FileRecord;
-  note: Note;
 }
 
-export function FileDownloadButton({ file, note }: FileDownloadButtonProps) {
-  const fileName = decodeURIComponent(file.file);
-  const downloadUrl = `/api/collections/files/records/${file.id}`;
+export function FileDownloadButton({ file }: FileDownloadButtonProps) {
+
 
   return (
     <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 dark:border-gray-700 dark:bg-gray-800/50">
@@ -27,12 +25,12 @@ export function FileDownloadButton({ file, note }: FileDownloadButtonProps) {
         </svg>
 
         <span className="text-sm text-gray-700 dark:text-gray-300">
-          {fileName}
+          {file.name}
         </span>
       </div>
 
       <a
-        href={downloadUrl}
+        href={file.url}
         download
         className="flex items-center gap-1 rounded-md bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50"
       >

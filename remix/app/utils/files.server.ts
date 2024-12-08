@@ -1,6 +1,6 @@
 import { getPb } from "./pb.server";
 import { redirect } from "@remix-run/node";
-import type { FileRecord } from "~/types/note";
+import type { FileRecord, PocketBaseFileRecord } from "~/types/note";
 
 // 上传文件
 export async function uploadFile(file: File, noteId?: string) {
@@ -12,7 +12,7 @@ export async function uploadFile(file: File, noteId?: string) {
   // 使用 blob 替代直接使用 File 对象
   // 直接使用 File 对象可能会上传失败
   const blob = new Blob([await file.arrayBuffer()], { type: file.type });
-  
+
   const formData = new FormData();
   formData.append("file", blob, file.name);
   formData.append(
@@ -55,3 +55,46 @@ export async function attachFileToNote(fileId: string, noteId: string) {
   }
 }
 
+// 获取笔记的所有关联文件
+export async function getFilesByNoteId(noteId: string) {
+  const pb = await getPb();
+  if (!pb.authStore.isValid) {
+    throw redirect("/login");
+  }
+
+  try {
+    const records = await pb
+      .collection("files")
+      .getFullList<PocketBaseFileRecord>({
+        filter: `note ~ "${noteId}"`,
+      });
+    const files = records.map((record) => transformFileRecord(pb, record));
+    if (files.length > 0) {
+      // TODO: delete
+      console.log("🦜 files[0]", files[0]);
+    }
+    return files;
+  } catch (error) {
+    console.error("🙂‍↕️ 获取笔记文件失败:", error);
+    throw new Error("🙂‍↕️ 获取笔记文件失败");
+  }
+}
+
+// 将 PocketBase 的文件记录转换为标准文件格式
+function transformFileRecord(
+  pb: any,
+  record: PocketBaseFileRecord
+): FileRecord {
+  /**
+   * 内部 url, 形如 http://db:8090/api/files/files/os9bwrx2dkdb4en/pho2_jYYH0MIjYT.png
+   *  `http://db:8090` 是 Docker 容器中的 PocketBase 服务地址，用户无法访问
+   *  `/api/files/files/os9bwrx2dkdb4en/pho2_jYYH0MIjYT.png` 则会基于当前域自动生成完整 url
+   */
+  const innerUrl = pb.files.getUrl(record, record.file);
+  const publicUrl = innerUrl.replace("http://db:8090", "");
+  return {
+    ...record,
+    name: record.file, // 重命名为更直观的字段名
+    url: publicUrl,
+  };
+}

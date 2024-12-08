@@ -38,7 +38,7 @@ migrate(
       schema: [
         {
           name: "file",
-          type: "file",
+          type: "file", // 在获取数据时，PocketBase 会返回文件的名称（字符串），而不是完整的 File 对象。
           required: true,
           options: {
             maxSelect: 1,
