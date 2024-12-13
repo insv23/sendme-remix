@@ -1,10 +1,13 @@
 import { FileRecord } from "~/types/note";
+import { truncateFilename } from "~/utils/formatters";
 
 export interface NoteAttachmentCardProps {
   file: FileRecord;
 }
 
 export function NoteAttachmentCard({ file }: NoteAttachmentCardProps) {
+  const displayName = truncateFilename(file.name);
+
   return (
     <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 dark:border-gray-700 dark:bg-gray-800/50">
       <div className="flex items-center gap-2 min-w-0 flex-1">
@@ -22,8 +25,11 @@ export function NoteAttachmentCard({ file }: NoteAttachmentCardProps) {
           />
         </svg>
 
-        <span className="text-sm text-gray-700 dark:text-gray-300 truncate" title={file.name}>
-          {file.name}
+        <span
+          className="text-sm text-gray-700 dark:text-gray-300 truncate"
+          title={file.name}
+        >
+          {displayName}
         </span>
       </div>
 
