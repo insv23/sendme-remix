@@ -6,8 +6,8 @@ interface NoteListProps {
 }
 
 export function NoteList({ notes }: NoteListProps) {
-  const sortedNotes = [...notes].sort((a, b) => 
-    new Date(b.updated).getTime() - new Date(a.updated).getTime()
+  const sortedNotes = [...notes].sort(
+    (a, b) => new Date(b.updated).getTime() - new Date(a.updated).getTime()
   );
 
   return (

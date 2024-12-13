@@ -1,6 +1,6 @@
 import { TypedResponse } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { NoteList } from "~/components/notes";
+import { NoteList } from "~/components/NoteList";
 import { NoteForm } from "~/components/NoteForm";
 import { getNotes } from "~/utils/notes.server";
 import { action as newNoteAction } from "./notes.new";

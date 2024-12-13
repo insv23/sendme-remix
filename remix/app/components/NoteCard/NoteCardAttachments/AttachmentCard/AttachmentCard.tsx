@@ -1,11 +1,11 @@
 import { FileRecord } from "~/types/note";
 import { truncateFilename } from "~/utils/formatters";
 
-export interface NoteAttachmentCardProps {
+export interface AttachmentCardProps {
   file: FileRecord;
 }
 
-export function NoteAttachmentCard({ file }: NoteAttachmentCardProps) {
+export function AttachmentCard({ file }: AttachmentCardProps) {
   const displayName = truncateFilename(file.name);
 
   return (

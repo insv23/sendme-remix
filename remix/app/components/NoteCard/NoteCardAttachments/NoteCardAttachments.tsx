@@ -1,11 +1,11 @@
 import type { FileRecord } from "~/types/note";
-import { NoteAttachmentCard } from "./NoteAttachmentCard/NoteAttachmentCard";
+import { AttachmentCard } from "./AttachmentCard";
 
-export interface NoteAttachmentsProps {
+export interface NoteCardAttachmentsProps {
   attachments: FileRecord[];
 }
 
-export function NoteAttachments({ attachments }: NoteAttachmentsProps) {
+export function NoteCardAttachments({ attachments }: NoteCardAttachmentsProps) {
   if (!attachments || attachments.length === 0) {
     return null;
   }
@@ -14,7 +14,7 @@ export function NoteAttachments({ attachments }: NoteAttachmentsProps) {
     <div className="mt-4 space-y-2">
       <div className="space-y-2">
         {attachments.map((file: FileRecord) => (
-          <NoteAttachmentCard key={file.id} file={file} />
+          <AttachmentCard key={file.id} file={file} />
         ))}
       </div>
     </div>

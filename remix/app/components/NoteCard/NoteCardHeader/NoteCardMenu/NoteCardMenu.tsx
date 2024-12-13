@@ -8,11 +8,11 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 
-interface NoteMenuProps {
+interface NoteCardMenuProps {
   noteId: string;
 }
 
-export function NoteMenu({ noteId }: NoteMenuProps) {
+export function NoteCardMenu({ noteId }: NoteCardMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -61,7 +61,10 @@ export function NoteMenu({ noteId }: NoteMenuProps) {
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
             <Form method="post" action={`/notes/${noteId}/delete`}>
-              <button type="submit" className="w-full flex gap-2 items-center text-red-600 dark:text-red-500">
+              <button
+                type="submit"
+                className="w-full flex gap-2 items-center text-red-600 dark:text-red-500"
+              >
                 <svg
                   className="h-4 w-4 text-red-600 dark:text-red-500"
                   fill="none"
