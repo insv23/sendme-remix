@@ -1,17 +1,15 @@
-import type { Note, FileRecord } from "~/types/note";
+import { FileRecord } from "~/types/note";
 
-export interface FileDownloadButtonProps {
+export interface NoteAttachmentCardProps {
   file: FileRecord;
 }
 
-export function FileDownloadButton({ file }: FileDownloadButtonProps) {
-
-
+export function NoteAttachmentCard({ file }: NoteAttachmentCardProps) {
   return (
     <div className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 dark:border-gray-700 dark:bg-gray-800/50">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 min-w-0 flex-1">
         <svg
-          className="h-5 w-5 text-gray-400"
+          className="h-5 w-5 text-gray-400 shrink-0"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -24,7 +22,7 @@ export function FileDownloadButton({ file }: FileDownloadButtonProps) {
           />
         </svg>
 
-        <span className="text-sm text-gray-700 dark:text-gray-300">
+        <span className="text-sm text-gray-700 dark:text-gray-300 truncate" title={file.name}>
           {file.name}
         </span>
       </div>
