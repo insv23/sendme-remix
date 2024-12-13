@@ -30,7 +30,6 @@ export async function uploadFile(file: File, noteId?: string) {
     const record = await pb.collection("files").create(formData, {
       requestKey,
     });
-    console.log("💬 file uploaded", record);
     return record;
   } catch (error) {
     console.error("文件上传失败:", error);
@@ -63,16 +62,16 @@ export async function getFilesByNoteId(noteId: string) {
   }
 
   try {
+    // 为每个获取文件列表的请求添加唯一的 requestKey
+    // Add unique requestKey for each file list request to prevent auto-cancellation
+    const requestKey = `get_files_${noteId}_${Date.now()}`;
     const records = await pb
       .collection("files")
       .getFullList<PocketBaseFileRecord>({
         filter: `note ~ "${noteId}"`,
+        requestKey,
       });
     const files = records.map((record) => transformFileRecord(pb, record));
-    if (files.length > 0) {
-      // TODO: delete
-      console.log("🦜 files[0]", files[0]);
-    }
     return files;
   } catch (error) {
     console.error("🙂‍↕️ 获取笔记文件失败:", error);
