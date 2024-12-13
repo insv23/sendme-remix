@@ -25,13 +25,16 @@ export const links: LinksFunction = () => [
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
+  { rel: "icon", type: "image/svg+xml", href: "/sendme-cf.svg" },
 ];
 
 export function meta() {
   return [
     { charset: "utf-8" },
-    { title: "New Remix App" },
+    { title: "Send Me" },
     { name: "viewport", content: "width=device-width,initial-scale=1" },
+    { rel: "icon", type: "image/svg+xml", href: "/sendme-cf.svg" },
+    { rel: "shortcut icon", type: "image/svg+xml", href: "/sendme-cf.svg" },
   ];
 }
 
