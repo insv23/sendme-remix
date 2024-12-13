@@ -1,3 +1,5 @@
+import PocketBase from "pocketbase";
+
 import { getPb } from "./pb.server";
 import { redirect } from "@remix-run/node";
 import type { FileRecord, PocketBaseFileRecord } from "~/types/note";
@@ -81,7 +83,7 @@ export async function getFilesByNoteId(noteId: string) {
 
 // 将 PocketBase 的文件记录转换为标准文件格式
 function transformFileRecord(
-  pb: any,
+  pb: PocketBase,
   record: PocketBaseFileRecord
 ): FileRecord {
   /**
@@ -89,7 +91,7 @@ function transformFileRecord(
    *  `http://db:8090` 是 Docker 容器中的 PocketBase 服务地址，用户无法访问
    *  `/api/files/files/os9bwrx2dkdb4en/pho2_jYYH0MIjYT.png` 则会基于当前域自动生成完整 url
    */
-  const innerUrl = pb.files.getUrl(record, record.file);
+  const innerUrl = pb.files.getURL(record, record.file);
   const publicUrl = innerUrl.replace("http://db:8090", "");
   return {
     ...record,

@@ -9,9 +9,11 @@ import { getPb } from "~/utils/pb.server";
 import { createSession } from "~/utils/session.server";
 import { checkAuth } from "~/utils/auth.server";
 
+type LoaderData = null;
+
 export async function loader({
   request,
-}: LoaderFunctionArgs): Promise<TypedResponse<any>> {
+}: LoaderFunctionArgs): Promise<TypedResponse<LoaderData>> {
   const auth = await checkAuth(request);
 
   if (auth.isAuthenticated) {
@@ -23,9 +25,15 @@ export async function loader({
   });
 }
 
+type ActionData = {
+  // 错误信息，可选字段
+  // 当验证失败或登录失败时会返回错误信息
+  error?: string;
+};
+
 export async function action({
   request,
-}: ActionFunctionArgs): Promise<TypedResponse<any>> {
+}: ActionFunctionArgs): Promise<TypedResponse<ActionData>> {
   const formData = await request.formData();
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;

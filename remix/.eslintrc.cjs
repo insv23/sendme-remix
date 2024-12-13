@@ -52,7 +52,7 @@ module.exports = {
 
     // Typescript
     {
-      files: ["**/*.{ts,tsx}"],
+      files: ["app/**/*.{ts,tsx}"],
       plugins: ["@typescript-eslint", "import"],
       parser: "@typescript-eslint/parser",
       settings: {

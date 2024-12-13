@@ -5,11 +5,10 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { checkAuth } from "~/utils/auth.server";
 
-import "./tailwind.css";
+// import "./tailwind.css";
 import styles from "./tailwind.css?url";
 import NotFound from "./routes/404";
 import { Navbar } from "./components/Navbar";

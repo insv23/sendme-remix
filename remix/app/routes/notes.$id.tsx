@@ -1,11 +1,12 @@
 import { LoaderFunctionArgs, TypedResponse } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { NoteCard } from "~/components/NoteCard";
+import { Note } from "~/types/note";
 import { getNote } from "~/utils/notes.server";
 
 export async function loader({
   params,
-}: LoaderFunctionArgs): Promise<TypedResponse<{ note: any }>> {
+}: LoaderFunctionArgs): Promise<TypedResponse<{ note: Note }>> {
   const note = await getNote(params.id!);
   if (!note) {
     throw new Response("Not Found", { status: 404 });

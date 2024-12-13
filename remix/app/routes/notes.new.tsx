@@ -3,24 +3,30 @@ import {
   type ActionFunctionArgs,
   TypedResponse,
 } from "@remix-run/node";
-import { Form, useActionData } from "@remix-run/react";
 import { createNote } from "~/utils/notes.server";
 import { NoteForm } from "~/components/NoteForm";
 import { attachFileToNote } from "~/utils/files.server";
 
+type ActionData = {
+  error?: string;
+};
+
 export async function action({
   request,
-}: ActionFunctionArgs): Promise<TypedResponse<any>> {
+}: ActionFunctionArgs): Promise<TypedResponse<ActionData>> {
   const formData = await request.formData();
   const text = formData.get("text") as string;
   const fileIds = formData.getAll("fileIds") as string[];
 
   // 确保笔记的文字内容和文件不能同时为空
   if (!text?.trim() && fileIds.length === 0) {
-    return new Response(JSON.stringify({ error: "笔记内容和文件不能同时为空" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ error: "笔记内容和文件不能同时为空" }),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 
   try {

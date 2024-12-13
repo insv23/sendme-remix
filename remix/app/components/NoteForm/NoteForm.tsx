@@ -1,6 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { Form } from "@remix-run/react";
-import { useActionData, useNavigation, useFetcher } from "@remix-run/react";
+import {
+  Form,
+  useActionData,
+  useNavigation,
+  useFetcher,
+} from "@remix-run/react";
 import type { action } from "~/routes/notes.new";
 import { NoteTextArea } from "./NoteTextArea";
 import { SendHorizontal, Upload } from "lucide-react";

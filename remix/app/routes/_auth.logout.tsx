@@ -7,9 +7,11 @@ import { Form, Link } from "@remix-run/react";
 import { requireAuth } from "~/utils/auth.server";
 import { destroySession } from "~/utils/session.server";
 
+type LoaderData = null;
+
 export const loader = async ({
   request,
-}: LoaderFunctionArgs): Promise<TypedResponse<any>> => {
+}: LoaderFunctionArgs): Promise<TypedResponse<LoaderData>> => {
   await requireAuth(request);
   return new Response(JSON.stringify({}), {
     headers: { "Content-Type": "application/json" },

@@ -1,10 +1,12 @@
-import { LoaderFunctionArgs, redirect, TypedResponse } from "@remix-run/node";
+import { LoaderFunctionArgs, TypedResponse } from "@remix-run/node";
 import { Outlet } from "@remix-run/react";
 import { requireAuth } from "~/utils/auth.server";
 
+type LoaderData = null;
+
 export async function loader({
   request,
-}: LoaderFunctionArgs): Promise<TypedResponse<any>> {
+}: LoaderFunctionArgs): Promise<TypedResponse<LoaderData>> {
   await requireAuth(request);
   return new Response(JSON.stringify({}), {
     headers: { "Content-Type": "application/json" },
