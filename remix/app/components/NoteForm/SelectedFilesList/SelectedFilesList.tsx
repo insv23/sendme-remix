@@ -1,8 +1,11 @@
+import { FileListItem } from "./FileListItem";
+
 interface SelectedFilesListProps {
   files: File[];
+  onRemove: (index: number) => void;
 }
 
-export function SelectedFilesList({ files }: SelectedFilesListProps) {
+export function SelectedFilesList({ files, onRemove }: SelectedFilesListProps) {
   if (files.length === 0) return null;
 
   return (
@@ -10,9 +13,11 @@ export function SelectedFilesList({ files }: SelectedFilesListProps) {
       <div className="text-sm text-gray-500 mb-2">已选择的文件:</div>
       <div className="space-y-2">
         {files.map((file, index) => (
-          <div key={index} className="text-sm text-gray-700">
-            {file.name}
-          </div>
+          <FileListItem
+            key={index}
+            file={file}
+            onRemove={() => onRemove(index)}
+          />
         ))}
       </div>
     </div>

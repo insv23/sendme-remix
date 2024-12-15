@@ -42,7 +42,10 @@ export function NoteForm() {
             onChange={(e) => setTextareaValue(e.target.value)}
           />
 
-          <SelectedFilesList files={selectedFiles} />
+          <SelectedFilesList
+            files={selectedFiles}
+            onRemove={() => {}} // TODO: 实现文件删除 removeFile
+          />
 
           {uploadedFileIds.map((fileId) => (
             <input type="hidden" name="fileIds" value={fileId} key={fileId} />
