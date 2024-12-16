@@ -105,3 +105,19 @@ function transformFileRecord(
     url: publicUrl,
   };
 }
+
+
+// 删除文件
+export async function deleteFile(fileId: string) {
+  const pb = await getPb();
+  if (!pb.authStore.isValid) {
+    throw redirect("/login");
+  }
+
+  try {
+    return pb.collection("files").delete(fileId);
+  } catch (error) {
+    console.error("删除文件失败:", error);
+    throw new Error("删除文件失败");
+  }
+}

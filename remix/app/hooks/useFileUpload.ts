@@ -1,9 +1,11 @@
 import { useCallback, useState } from "react";
+import { useFetcher } from "@remix-run/react";
 import { nanoid } from "nanoid";
 import type { UploadFile } from "~/types/upload";
 
 export function useFileUpload() {
   const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([]);
+  const deleteFetcher = useFetcher();
 
   // 添加文件到队列
   const addFiles = useCallback((rawFiles: File[]) => {
@@ -62,10 +64,32 @@ export function useFileUpload() {
   }, []);
 
   // 移除文件
-  // TODO: 正在上传和上传成功的文件需要和服务器沟通
-  const removeFile = useCallback((fileId: string) => {
-    setUploadFiles((prev) => prev.filter((f) => f.id !== fileId));
-  }, []);
+  const removeFile = useCallback(
+    async (fileId: string) => {
+      const file = uploadFiles.find((f) => f.id === fileId);
+      if (!file) return;
+
+      // 如果文件正在上传中，不允许删除
+      if (file.status === "uploading") {
+        return;
+      }
+
+      // 如果文件已上传成功，需要通知服务器删除
+      if (file.status === "success") {
+        deleteFetcher.submit(
+          { id: fileId },
+          {
+            method: "post",
+            action: "/file/delete",
+          }
+        );
+      }
+
+      // 从本地状态中移除文件
+      setUploadFiles((prev) => prev.filter((f) => f.id !== fileId));
+    },
+    [uploadFiles, deleteFetcher]
+  );
 
   // 重置所有状态
   const reset = useCallback(() => {
