@@ -1,7 +1,8 @@
 import { FilePreview } from "./FilePreview";
 import { RemoveButton } from "./RemoveButton";
-import { useFilePreview } from "./useFilePreview";
 import { StatusIcon } from "./StatusIcon";
+
+import { useFilePreview } from "~/hooks/useFilePreview";
 
 import type { UploadStatus } from "~/types/upload";
 import { truncateFilename } from "~/utils/formatters";
