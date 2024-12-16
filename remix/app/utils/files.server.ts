@@ -5,7 +5,7 @@ import { redirect } from "@remix-run/node";
 import type { FileRecord, PocketBaseFileRecord } from "~/types/note";
 
 // 上传文件
-export async function uploadFile(file: File, noteId?: string) {
+export async function saveFile(file: File, fileId: string, noteId?: string) {
   const pb = await getPb();
   if (!pb.authStore.isValid) {
     throw redirect("/login");
@@ -17,6 +17,7 @@ export async function uploadFile(file: File, noteId?: string) {
 
   const formData = new FormData();
   formData.append("file", blob, file.name);
+  formData.append("id", fileId);
   formData.append(
     "created_by",
     JSON.parse(atob(pb.authStore.token.split(".")[1])).id
@@ -26,16 +27,15 @@ export async function uploadFile(file: File, noteId?: string) {
   }
 
   try {
-    // 为每个文件上传请求添加唯一的 requestKey，不然 pb 会只上传最后一个文件
-    // https://github.com/pocketbase/js-sdk?tab=readme-ov-file#auto-cancellation
-    const requestKey = `upload_${file.name}_${Date.now()}`;
     const record = await pb.collection("files").create(formData, {
-      requestKey,
+      // 为每个文件上传请求添加唯一的 requestKey，不然 pb 会只上传最后一个文件
+      // https://github.com/pocketbase/js-sdk?tab=readme-ov-file#auto-cancellation
+      requestKey: fileId,
     });
     return record;
   } catch (error) {
-    console.error("文件上传失败:", error);
-    throw new Error("文件上传失败");
+    console.error("文件保存失败:", error);
+    throw new Error("文件保存失败");
   }
 }
 

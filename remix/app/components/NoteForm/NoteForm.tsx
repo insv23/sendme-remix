@@ -3,7 +3,7 @@ import { Form, useActionData, useNavigation } from "@remix-run/react";
 import type { action } from "~/routes/notes.new";
 
 import { NoteTextArea } from "./NoteTextArea";
-import { SelectedFilesList } from "./SelectedFilesList";
+import { FilesList } from "./FilesList";
 import { SubmitButton } from "./SubmitButton";
 import { FileUploadButton } from "./FileUploadButton";
 
@@ -17,10 +17,11 @@ export function NoteForm() {
 
   const [textareaValue, setTextareaValue] = useState("");
   const {
-    selectedFiles,
-    uploadedFileIds,
     uploadFiles,
+    addFiles,
+    removeFile,
     reset: resetFiles,
+    getUploadedFileIds,
   } = useFileUpload();
 
   useEffect(() => {
@@ -37,25 +38,19 @@ export function NoteForm() {
         <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm focus-within:border-blue-200 focus-within:ring-1 focus-within:ring-blue-200">
           <NoteTextArea
             isSubmitting={isSubmitting}
-            onFilesPasted={uploadFiles}
+            onFilesPasted={addFiles}
             value={textareaValue}
             onChange={(e) => setTextareaValue(e.target.value)}
           />
 
-          <SelectedFilesList
-            files={selectedFiles}
-            onRemove={() => {}} // TODO: 实现文件删除 removeFile
-          />
+          <FilesList uploadFiles={uploadFiles} onRemove={removeFile} />
 
-          {uploadedFileIds.map((fileId) => (
+          {getUploadedFileIds().map((fileId) => (
             <input type="hidden" name="fileIds" value={fileId} key={fileId} />
           ))}
 
           <div className="flex items-center justify-end gap-2 bg-white p-3">
-            <FileUploadButton
-              onFileSelect={uploadFiles}
-              disabled={isSubmitting}
-            />
+            <FileUploadButton onFileSelect={addFiles} disabled={isSubmitting} />
             <SubmitButton isSubmitting={isSubmitting} />
           </div>
         </div>

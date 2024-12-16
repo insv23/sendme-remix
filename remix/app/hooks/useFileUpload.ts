@@ -1,84 +1,87 @@
-import { useCallback, useEffect, useState } from "react";
-import { useFetcher } from "@remix-run/react";
+import { useCallback, useState } from "react";
+import { nanoid } from "nanoid";
+import type { UploadFile } from "~/types/upload";
 
-/**
- * 文件上传钩子工作流程
- * 1. 用户选择文件
- * uploadFiles([file1, file2]);
- * 2. 自动对每个文件进行上传
- *       files.forEach((file) => {
- *         const formData = new FormData();
- *         formData.append("file", file);
- *         uploadFetcher.submit(formData, {
- *           method: "post",
- *           action: "/file/upload",
- *           encType: "multipart/form-data",
- *         });
- *       });
- * 3. 服务器响应
- * 对每个成功上传的文件，服务器返回 { id: "file_123" }
- * 4. useEffect 捕获响应
- * 每当 uploadFetcher.data 更新时
- * useEffect 会运行并更新 uploadedFileIds
- */
+export function useFileUpload() {
+  const [uploadFiles, setUploadFiles] = useState<UploadFile[]>([]);
 
-interface UseFileUploadResult {
-  selectedFiles: File[];
-  uploadedFileIds: string[];
-  uploadFiles: (files: File[]) => void;
-  reset: () => void;
-}
+  // 添加文件到队列
+  const addFiles = useCallback((rawFiles: File[]) => {
+    const newUploadFiles = rawFiles.map((rawFile) => ({
+      id: nanoid(15),
+      status: "pending" as const,
+      rawFile: rawFile,
+    }));
+    setUploadFiles((prev) => [...prev, ...newUploadFiles]);
 
-export function useFileUpload(): UseFileUploadResult {
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [uploadedFileIds, setUploadedFileIds] = useState<string[]>([]);
-  const uploadFetcher = useFetcher();
-
-  /**
-   * useCallback 是 React 中的一个钩子，用于优化性能
-   * useCallback 返回一个 memoized(记忆化) 的回调函数
-   * 如果依赖项没有发生变化，则返回相同的函数
-   * 如果依赖项发生变化，则返回一个新的函数
-   *
-   * 在 React 中，每次组件重渲染时，内部定义的函数都会重新创建
-   *
-   * 如果不使用 useCallback，每次 NoteForm 重渲染时都会创建一个新的 uploadFiles 函数
-   * 这会导致接收这个函数的子组件（如 FileUploadButton）也重新渲染
-   */
-  const uploadFiles = useCallback(
-    (files: File[]) => {
-      setSelectedFiles((prev) => [...prev, ...files]);
-
-      files.forEach((file) => {
-        const formData = new FormData();
-        formData.append("file", file);
-        uploadFetcher.submit(formData, {
-          method: "post",
-          action: "/file/upload",
-          encType: "multipart/form-data",
-        });
-      });
-    },
-    [uploadFetcher]
-  );
-
-  useEffect(() => {
-    const data = uploadFetcher.data as { id: string };
-    if (data?.id) {
-      setUploadedFileIds((prev) => [...prev, data.id]);
-    }
-  }, [uploadFetcher.data]);
-
-  // 点击发送按钮, 表单提交成功后，清除已上传的文件
-  const reset = useCallback(() => {
-    setSelectedFiles([]);
-    setUploadedFileIds([]);
+    // 自动开始上传新添加的文件
+    newUploadFiles.forEach(handleFileUpload);
   }, []);
 
+  // 上传单个文件
+  const handleFileUpload = useCallback(async (uploadFile: UploadFile) => {
+    try {
+      // 更新文件状态为上传中
+      setUploadFiles((prev) =>
+        prev.map((f) =>
+          f.id === uploadFile.id ? { ...f, status: "uploading" } : f
+        )
+      );
+
+      // 上传文件
+      const formData = new FormData();
+      formData.append("file", uploadFile.rawFile);
+      formData.append("id", uploadFile.id);
+
+      const response = await fetch("/file/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      // 同时有很多个文件上传, 它怎么知道返回的 response 是哪个文件上传的 response?
+      // 因为 uploadFile 函数是在一个闭包中执行的，每个文件上传都有自己独立的执行上下文，所以它能正确匹配对应文件的 response。
+      if (response.ok) {
+        setUploadFiles((prev) =>
+          prev.map((f) =>
+            f.id === uploadFile.id ? { ...f, status: "success" } : f
+          )
+        );
+      }
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      setUploadFiles((prev) =>
+        prev.map((f) =>
+          f.id === uploadFile.id
+            ? { ...f, status: "error", error: errorMessage }
+            : f
+        )
+      );
+      throw error;
+    }
+  }, []);
+
+  // 移除文件
+  // TODO: 正在上传和上传成功的文件需要和服务器沟通
+  const removeFile = useCallback((fileId: string) => {
+    setUploadFiles((prev) => prev.filter((f) => f.id !== fileId));
+  }, []);
+
+  // 重置所有状态
+  const reset = useCallback(() => {
+    setUploadFiles([]);
+  }, []);
+
+  // 获取已成功上传的文件ID列表
+  // FIXME: 应该是 files 中所有的 id(包含正在上传的文件)
+  const getUploadedFileIds = () =>
+    uploadFiles.filter((f) => f.status === "success").map((f) => f.id);
+
   return {
-    selectedFiles,
-    uploadedFileIds,
     uploadFiles,
+    addFiles,
+    removeFile,
     reset,
+    getUploadedFileIds,
   };
 }

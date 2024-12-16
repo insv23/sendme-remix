@@ -1,5 +1,5 @@
 import { ActionFunction } from "@remix-run/node";
-import { uploadFile } from "~/utils/files.server";
+import { saveFile } from "~/utils/files.server";
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
@@ -16,16 +16,23 @@ export const action: ActionFunction = async ({ request }) => {
    */
   const file = formData.get("file");
 
+  const fileId = formData.get("id") as string;
+
   if (!file) {
-    throw new Response("无效的文件上传", { status: 400 });
+    throw new Response("未能获取文件", { status: 400 });
+  }
+
+  if (!fileId) {
+    throw new Response("未能获取文件ID", { status: 400 });
   }
 
   try {
-    const uploadedFile = await uploadFile(file as File);
-    return new Response(JSON.stringify(uploadedFile), {
+    const savedFile = await saveFile(file as File, fileId);
+    return new Response(JSON.stringify(savedFile), {
       headers: {
         "Content-Type": "application/json",
       },
+      // TODO: 有必要返回文件吗?
     });
   } catch (error) {
     console.error("🤮 上传失败:", error);
