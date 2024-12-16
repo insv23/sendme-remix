@@ -6,6 +6,12 @@ import type { FileRecord, PocketBaseFileRecord } from "~/types/note";
 
 // 上传文件
 export async function saveFile(file: File, fileId: string, noteId?: string) {
+  // 开发环境人为添加延迟
+  if (process.env.NODE_ENV === "development") {
+    const UPLOAD_DELAY = 2000; // ms
+    await new Promise((resolve) => setTimeout(resolve, UPLOAD_DELAY));
+  }
+
   const pb = await getPb();
   if (!pb.authStore.isValid) {
     throw redirect("/login");
