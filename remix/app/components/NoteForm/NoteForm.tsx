@@ -22,6 +22,7 @@ export function NoteForm() {
     removeFile,
     reset: resetFiles,
     getUploadedFileIds,
+    hasOngoingUploads,
   } = useFileUpload();
 
   useEffect(() => {
@@ -51,7 +52,10 @@ export function NoteForm() {
 
           <div className="flex items-center justify-end gap-2 bg-white p-3">
             <FileUploadButton onFileSelect={addFiles} disabled={isSubmitting} />
-            <SubmitButton isSubmitting={isSubmitting} />
+            <SubmitButton
+              isSubmitting={isSubmitting}
+              hasOngoingUploads={hasOngoingUploads()}
+            />
           </div>
         </div>
       </Form>

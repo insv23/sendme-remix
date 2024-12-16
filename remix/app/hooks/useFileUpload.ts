@@ -73,9 +73,17 @@ export function useFileUpload() {
   }, []);
 
   // 获取已成功上传的文件ID列表
-  // FIXME: 应该是 files 中所有的 id(包含正在上传的文件)
   const getUploadedFileIds = () =>
     uploadFiles.filter((f) => f.status === "success").map((f) => f.id);
+
+  // 检查是否有文件正在上传/等待上传/上传失败
+  const hasOngoingUploads = () =>
+    uploadFiles.some(
+      (f) =>
+        f.status === "pending" ||
+        f.status === "uploading" ||
+        f.status === "error"
+    );
 
   return {
     uploadFiles,
@@ -83,5 +91,6 @@ export function useFileUpload() {
     removeFile,
     reset,
     getUploadedFileIds,
+    hasOngoingUploads,
   };
 }
