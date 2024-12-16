@@ -17,6 +17,7 @@ export function FilesList({ uploadFiles, onRemove }: FilesListProps) {
           <FileListItem
             key={uploadFile.id}
             file={uploadFile.rawFile}
+            uploadStatus={uploadFile.status}
             onRemove={() => onRemove(uploadFile.id)}
           />
         ))}

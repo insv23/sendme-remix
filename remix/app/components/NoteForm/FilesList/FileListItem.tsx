@@ -1,15 +1,22 @@
 import { FilePreview } from "./FilePreview";
 import { RemoveButton } from "./RemoveButton";
 import { useFilePreview } from "./useFilePreview";
+import { StatusIcon } from "./StatusIcon";
 
+import type { UploadStatus } from "~/types/upload";
 import { truncateFilename } from "~/utils/formatters";
 
 interface FileListItemProps {
   file: File;
+  uploadStatus: UploadStatus;
   onRemove: () => void;
 }
 
-export function FileListItem({ file, onRemove }: FileListItemProps) {
+export function FileListItem({
+  file,
+  uploadStatus,
+  onRemove,
+}: FileListItemProps) {
   const previewUrl = useFilePreview(file);
   const displayFileName = truncateFilename(file.name);
 
@@ -22,6 +29,8 @@ export function FileListItem({ file, onRemove }: FileListItemProps) {
       <div className="flex-grow text-sm text-gray-700 truncate">
         {displayFileName}
       </div>
+
+      <StatusIcon status={uploadStatus} />
 
       <RemoveButton onClick={onRemove} />
     </div>
